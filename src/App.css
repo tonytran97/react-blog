@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+li {
+  display: inline; 
+  margin: 15px;
+}
+
+a, a:visited {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  font-size: medium;
+}
+
+ul {
+  border-bottom: 2px solid #333;
+}
