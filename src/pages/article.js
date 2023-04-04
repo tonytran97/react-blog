@@ -1,7 +1,7 @@
-const article = () => {
+const Article = () => {
     return (
         <h1>Article</h1>
     );
 }
 
-export default article;
+export default Article;
