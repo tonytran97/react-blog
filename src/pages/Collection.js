@@ -1,6 +1,6 @@
 const Collection = () => {
     return (
-        <h1>Article Collection</h1>
+        <h1>Article Collection List</h1>
     );
 }
 
