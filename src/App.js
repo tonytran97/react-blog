@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Article from './pages/Article';
 import Collection from './pages/Collection';
+import NotFound from './pages/404';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/article/:articleID" element={<Article />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       </div>
     </div>
