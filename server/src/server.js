@@ -1,16 +1,11 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
+import { db, connectionToDB} from '../config/connection.js';
 
 const app = express();
 app.use(express.json());
 
 app.get('/api/article/:name', async (req, res) => {
     const { name } = req.params;
-    
-    const client = new MongoClient('mongodb://127.0.0.1:27017');
-    await client.connect();
-
-    const db = client.db('react-blog-db');
 
     const article = await db.collection('collection').findOne({ name });
 
@@ -24,10 +19,6 @@ app.get('/api/article/:name', async (req, res) => {
 app.put('/api/article/:name/upvote', async (req, res) => {
     const { name } = req.params;
     
-    const client = new MongoClient('mongodb://127.0.0.1:27017');
-    await client.connect();
-
-    const db = client.db('react-blog-db');
     await db.collection('collection').updateOne({ name }, {
         $inc: { upvote: 1 },
     });
@@ -44,11 +35,6 @@ app.put('/api/article/:name/upvote', async (req, res) => {
 app.post('/api/article/:name/comments', async (req, res) => {
     const { name } = req.params;
     const { username, text } = req.body;
-    
-    const client = new MongoClient('mongodb://127.0.0.1:27017');
-    await client.connect();
-
-    const db = client.db('react-blog-db');
 
     await db.collection('collection').updateOne({ name }, {
         $push: { comments: { username, text} },
@@ -63,6 +49,9 @@ app.post('/api/article/:name/comments', async (req, res) => {
     }
 });
 
-app.listen(8000, () => {
-    console.log('Server listening on port 8000');
-});
+connectionToDB(() => {
+    console.log('Connection to db has been made');
+    app.listen(8000, () => {
+        console.log('Server listening on port 8000');
+    });
+})
