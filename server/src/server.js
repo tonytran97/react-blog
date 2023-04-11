@@ -41,12 +41,22 @@ app.put('/api/article/:name/upvote', async (req, res) => {
     }
 });
 
-app.post('/api/article/:name/comments', (req, res) => {
+app.post('/api/article/:name/comments', async (req, res) => {
     const { name } = req.params;
     const { username, text } = req.body;
-    const article = articleInfo.find(a => a.name === name);
+    
+    const client = new MongoClient('mongodb://127.0.0.1:27017');
+    await client.connect();
+
+    const db = client.db('react-blog-db');
+
+    await db.collection('collection').updateOne({ name }, {
+        $push: { comments: { username, text} },
+    });
+
+    const article = await db.collection('collection').findOne({ name });
+
     if (article) {
-        article.comments.push({ username, text });
         res.send(article.comments);
     } else {
         res.send(`That article doesn't exist`);
