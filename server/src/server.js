@@ -1,21 +1,25 @@
 import express from 'express';
-
-let articleInfo = [{
-    name: 'learning-react',
-    upvote: 0,
-    comments: [],
-}, {
-    name: 'learning-node', 
-    upvote: 0,
-    comments: [],
-}, {
-    name: 'learning-mongo',
-    upvote: 0,
-    comments: [],
-}]
+import { MongoClient } from 'mongodb';
 
 const app = express();
 app.use(express.json());
+
+app.get('/api/article/:name', async (req, res) => {
+    const { name } = req.params;
+    
+    const client = new MongoClient('mongodb://127.0.0.1:27017');
+    await client.connect();
+
+    const db = client.db('react-blog-db');
+
+    const article = await db.collection('collection').findOne({ name });
+
+    if (article) {
+        res.json(article);
+    } else {
+        res.sendStatus(404);
+    }
+})
 
 app.put('/api/article/:name/upvote', (req, res) => {
     const { name } = req.params;
