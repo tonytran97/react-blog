@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import sampleArticles from '../data/Article-Samples';
 import NotFound from './404';
+import CommentsList from '../components/CommentsList';
 
 const Article = () => {
     const [articleInfo, setArticleInfo] = useState({ upvote: 0, comments: [] });
@@ -26,6 +27,7 @@ const Article = () => {
     return <><h1>{article.title}</h1>
     <p>This article has {articleInfo.upvote} upvote(s)</p>
     {article.content}
+    <CommentsList comments={articleInfo.comments} />
     </>
 };
 
