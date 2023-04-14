@@ -20,11 +20,19 @@ const Article = () => {
 
     const article = sampleArticles.find(article => article.name === articleID);
 
+    const increaseUpvote = async () => {
+        const response = await axios.put(`/api/article/${articleID}/upvote`);
+
+        const updatedArticle = response.data;
+        setArticleInfo(updatedArticle);
+    }
+
     if (!article) {
         return <NotFound />
     }
 
     return <><h1>{article.title}</h1>
+    <button onClick={increaseUpvote}>Upvote</button>
     <p>This article has {articleInfo.upvote} upvote(s)</p>
     {article.content}
     <CommentsList comments={articleInfo.comments} />
