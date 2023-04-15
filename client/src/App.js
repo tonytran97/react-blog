@@ -6,6 +6,8 @@ import About from './pages/About';
 import Article from './pages/Article';
 import Collection from './pages/Collection';
 import NotFound from './pages/404';
+import Login from './pages/Login';
+import Create from './pages/Create';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/article/:articleID" element={<Article />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/create-account" element={<Create />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       </div>
