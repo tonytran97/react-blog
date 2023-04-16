@@ -5,10 +5,13 @@ import sampleArticles from '../data/Article-Samples';
 import NotFound from './404';
 import CommentsList from '../components/CommentsList';
 import CommentForm from '../components/AddComments';
+import useUser from '../utils/useUser';
 
 const Article = () => {
     const [articleInfo, setArticleInfo] = useState({ upvote: 0, comments: [] });
     const { articleID } = useParams();
+
+    const { user, isLoading } = useUser();
 
     useEffect(() => {
         const loadArticleInfo = async () => {
@@ -33,12 +36,16 @@ const Article = () => {
     }
 
     return <><h1>{article.title}</h1>
-    <button onClick={increaseUpvote}>Upvote</button>
+    {user
+    ? <button onClick={increaseUpvote}>Upvote</button>
+    : <button>Login if you would like to upvote </button>}
     <p>This article has {articleInfo.upvote} upvote(s)</p>
     {article.content}
-    <CommentForm
+    {user
+    ? <CommentForm
     articleName={articleID}
     onArticleUpdated={updatedArticle => setArticleInfo(updatedArticle)} />
+    : <button>Login if you would like to add a comment </button>}
     <CommentsList comments={articleInfo.comments} />
     </>
 };
