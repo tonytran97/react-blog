@@ -13,7 +13,7 @@ const Login = () => {
     const signIn = async () => {
         try {
             await signInWithEmailAndPassword(getAuth(), email, password);
-            navigate('/articles');
+            navigate('/collection');
         } catch (e) {
             setError(e.message);
         }
