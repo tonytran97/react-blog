@@ -24,13 +24,7 @@ const CommentForm = ({ articleName, onArticleUpdated }) => {
     return (
         <div>
             <h3>Add a Comment</h3>
-            <label>
-                Name:
-                <input
-                value={name} 
-                onChange={e => setName(e.target.value)}
-                type='text' />
-            </label>
+            {user && <p>You are posting as {user.email}</p>}
             <label>
                 Comment:
                 <textarea 
