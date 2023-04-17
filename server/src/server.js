@@ -13,29 +13,61 @@ admin.initializeApp({
 const app = express();
 app.use(express.json());
 
+app.use(async (req, res, next) => {
+    const { authtoken } = req.headers; 
+
+    if(authtoken) {
+        try {
+            req.user = await admin.auth().verifyIdToken(authtoken);
+        } catch (e) {
+            res.sendStatus(400);
+        }
+    }
+    next();
+});
+
 app.get('/api/article/:name', async (req, res) => {
     const { name } = req.params;
+    const { uid } = req.user;
 
     const article = await db.collection('collection').findOne({ name });
 
     if (article) {
+        const upvoteIDs = article.upvoteIDs || [];
+        article.canUpvote = uid && !upvoteIDs.include(uid);
         res.json(article);
     } else {
         res.sendStatus(404);
     }
 })
 
+app.use((req, res, next) => {
+    if (req.user) {
+        next();
+    } else { 
+        res.sendStatus(401);
+    }
+})
+
 app.put('/api/article/:name/upvote', async (req, res) => {
     const { name } = req.params;
-    
-    await db.collection('collection').updateOne({ name }, {
-        $inc: { upvote: 1 },
-    });
+    const { uid } = req.user;
 
     const article = await db.collection('collection').findOne({ name });
 
-    if (article){
-        res.json(article);
+    if (article) {
+        const upvoteIDs = article.upvoteIDs || [];
+        const canUpvote = uid && !upvoteIDs.include(uid);
+
+        if(canUpvote) {
+            await db.collection('collection').updateOne({ name }, {
+                $inc: { upvote: 1 },
+                $push: { upvoteIDs: uid},
+            });
+        }
+    
+    const updatedArticle = await db.collection('collection').findOne({ name });
+    res.json(updatedArticle);
     } else {
         res.send(`That article doesn't exist`);
     }
@@ -43,10 +75,11 @@ app.put('/api/article/:name/upvote', async (req, res) => {
 
 app.post('/api/article/:name/comments', async (req, res) => {
     const { name } = req.params;
-    const { username, text } = req.body;
+    const { text } = req.body;
+    const { email } = req.user;
 
     await db.collection('collection').updateOne({ name }, {
-        $push: { comments: { username, text} },
+        $push: { comments: { username: email, text} },
     });
 
     const article = await db.collection('collection').findOne({ name });
