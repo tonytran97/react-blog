@@ -8,7 +8,8 @@ import CommentForm from '../components/AddComments';
 import useUser from '../utils/useUser';
 
 const Article = () => {
-    const [articleInfo, setArticleInfo] = useState({ upvote: 0, comments: [] });
+    const [articleInfo, setArticleInfo] = useState({ upvote: 0, comments: [], canUpVote: false });
+    const { canUpVote} = articleInfo;
     const { articleID } = useParams();
 
     const { user, isLoading } = useUser();
@@ -22,8 +23,10 @@ const Article = () => {
             const newArticleInfo = response.data;
             setArticleInfo(newArticleInfo);
         }
-        loadArticleInfo();
-    }, []);
+        if (isLoading) {
+            loadArticleInfo();
+        }
+    }, [isLoading, user]);
 
     const article = sampleArticles.find(article => article.name === articleID);
 
@@ -42,7 +45,7 @@ const Article = () => {
 
     return <><h1>{article.title}</h1>
     {user
-    ? <button onClick={increaseUpvote}>Upvote</button>
+    ? <button onClick={increaseUpvote}>{canUpVote ? 'Upvote' : 'You have already upvoted this article'}</button>
     : <button>Login if you would like to upvote </button>}
     <p>This article has {articleInfo.upvote} upvote(s)</p>
     {article.content}
