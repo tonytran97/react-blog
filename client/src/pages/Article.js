@@ -15,7 +15,10 @@ const Article = () => {
 
     useEffect(() => {
         const loadArticleInfo = async () => {
-            const response = await axios.get(`/api/article/${articleID}`);
+            const token = user && await user.getIdToken();
+            const headers = token ? { authtoken: token} : {};
+            const response = await axios.get(`/api/article/${articleID}`, { headers });
+
             const newArticleInfo = response.data;
             setArticleInfo(newArticleInfo);
         }
@@ -25,7 +28,9 @@ const Article = () => {
     const article = sampleArticles.find(article => article.name === articleID);
 
     const increaseUpvote = async () => {
-        const response = await axios.put(`/api/article/${articleID}/upvote`);
+        const token = user && await user.getIdToken();
+        const headers = token ? { authtoken: token} : {};
+        const response = await axios.put(`/api/article/${articleID}/upvote`, null, { headers });
 
         const updatedArticle = response.data;
         setArticleInfo(updatedArticle);

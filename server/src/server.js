@@ -4,7 +4,7 @@ import express from 'express';
 import { db, connectionToDB} from '../config/connection.js';
 
 const credentials = JSON.parse(
-    fs.readFileSync('../credentials.json')
+    fs.readFileSync('./credentials.json')
 );
 admin.initializeApp({
     credential: admin.credential.cert(credentials),
@@ -20,9 +20,11 @@ app.use(async (req, res, next) => {
         try {
             req.user = await admin.auth().verifyIdToken(authtoken);
         } catch (e) {
-            res.sendStatus(400);
+           return res.sendStatus(400);
         }
     }
+    req.user = req.user || {};
+
     next();
 });
 
@@ -37,7 +39,7 @@ app.get('/api/article/:name', async (req, res) => {
         article.canUpvote = uid && !upvoteIDs.include(uid);
         res.json(article);
     } else {
-        res.sendStatus(404);
+        return res.sendStatus(404);
     }
 })
 
@@ -45,7 +47,7 @@ app.use((req, res, next) => {
     if (req.user) {
         next();
     } else { 
-        res.sendStatus(401);
+        return res.sendStatus(401);
     }
 })
 
@@ -87,7 +89,7 @@ app.post('/api/article/:name/comments', async (req, res) => {
     if (article) {
         res.json(article);
     } else {
-        res.send(`That article doesn't exist`);
+        return res.send(`That article doesn't exist`);
     }
 });
 
