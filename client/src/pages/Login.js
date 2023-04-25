@@ -23,17 +23,23 @@ const Login = () => {
         <>
         <h1>Login</h1>
         {error && <p>{error}</p>}
+        <div className="card">
+        <label>Username</label>
         <input
          placeholder='Email address'
          value={email}
          onChange={e => setEmail(e.target.value)} />
+        <label>Password</label>
         <input 
         type="password"
         placeholder='Password'
         value={password}
         onChange={e => setPassword(e.target.value)} />
-        <button onClick={signIn}>Login</button>
+
+        <button className="loginBtn" onClick={signIn}>Login</button>
+
         <Link to="/create-account">Don't have an account? Click here!</Link>
+        </div>
         </>
     );
 }
