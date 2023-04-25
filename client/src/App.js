@@ -14,7 +14,6 @@ function App() {
     <BrowserRouter>
     <div className="App">
       <div id="body">
-      <h1>My React Blog</h1>
       <Navbar/>
       <Routes>
         <Route path="/" element={<Home />} />
